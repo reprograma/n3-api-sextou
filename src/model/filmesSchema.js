@@ -16,9 +16,11 @@ const filmesSchema = new Schema({
             required: true
         },
         
-        avaliacao: {
-            type:[Number],
-        },
+        avaliacao2: [{
+            type: Number,
+            min: 1,
+            max: 5
+        }],
 
         exibicoes: {
             type: Number

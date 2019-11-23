@@ -2,13 +2,24 @@ const filmesCollection = require('../model/filmesSchema')
 
 
 const getAll = (request, response) => {
-    filmesCollection.find((error, filme)=>{
+    filmesCollection.find((error, filmes)=>{
+
         if(error){
             return response.status(500).send(error)
         }else{
-            return response.status(200).send(filme)
+            
+            return response.status(200).send(filmes.sort((primeiro, segundo) =>{
+                if(primeiro.avaliacao2.length>segundo.avaliacao2.length){
+                    return -1
+                }else if(segundo.avaliacao2.length>primeiro.avaliacao2.length){
+                    return 1
+                }else {
+                    return 0
+                }
+            }))
         }
     })
+    
 
 }
 
@@ -30,6 +41,11 @@ const patchFilme = (request, response) =>{
     const filmeDoBody = request.body
     const options = {new:true}
 
+    filmeDoBody.avaliacao2.forEach(a => {
+        if(a>5 || a<1){
+            return response.status(400).send("Avaliação deverá ser entre 1 e 5.")
+        }
+    })
     filmesCollection.findByIdAndUpdate(id,filmeDoBody,options,(error,filme) =>{
         if(error){
             return response.status(500).send(error)
